@@ -1,0 +1,7 @@
+token.txt
+path.txt
+courses.txt
+
+!example/path.txt
+!example/courses.txt
+!example/token.txt
