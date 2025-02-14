@@ -3,10 +3,10 @@
 # Canvas API 配置
 CANVAS_URL="https://oc.sjtu.edu.cn"
 CANVAS_API_URL="$CANVAS_URL/api/v1"
-API_KEY="$(<token.txt)"  # 从 token.txt 文件中读取 API 密钥
+API_KEY="$(<$(dirname "$0")/token.txt)"  # 从与脚本相同文件夹中的 token.txt 文件中读取 API 密钥
 
 # 下载配置
-DOWNLOAD_FOLDER="$HOME/$(<path.txt)"  # 下载文件存储路径
+DOWNLOAD_FOLDER="$(<$(dirname "$0")/path.txt)"  # 下载文件存储路径
 SYNC_ON=false
 # read -p "是否启用同步模式（跳过已下载的文件）默认启用？(y/n): " sync_choice
 # if [ "$sync_choice" = "n" ]; then
@@ -96,18 +96,17 @@ sync_files() {
     new_files_count=0
 
     # 读取 courses.txt 文件
-    if [ ! -f "courses.txt" ]; then
+    if [ ! -f "$(dirname "$0")/courses.txt" ]; then
         echo "错误：courses.txt 文件不存在。"
         exit 1
     fi
 
     # 读取课程数量
-    # Read the number of courses
-    read -r num_courses < courses.txt
+    read -r num_courses < "$(dirname "$0")/courses.txt"
     echo "Number of courses: $num_courses"
 
     # Skip the first line (number of courses)
-    tail -n +2 courses.txt > temp_courses.txt
+    tail -n +2 "$(dirname "$0")/courses.txt" > temp_courses.txt
 
     # Read course information and create directories
     for ((i = 1; i <= num_courses; i++)); do
