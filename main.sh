@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Canvas API 配置
+CUR_PATH="$(dirname "$0")"
 CANVAS_URL="https://oc.sjtu.edu.cn"
 CANVAS_API_URL="$CANVAS_URL/api/v1"
-API_KEY="$(<$(dirname "$0")/token.txt)"  # 从与脚本相同文件夹中的 token.txt 文件中读取 API 密钥
+API_KEY="$(<"$CUR_PATH/token.txt")"  # 从与脚本相同文件夹中的 token.txt 文件中读取 API 密钥
 
 # 下载配置
-DOWNLOAD_FOLDER="$(<$(dirname "$0")/path.txt)"  # 下载文件存储路径
+DOWNLOAD_FOLDER="$(<"$CUR_PATH/path.txt")"  # 下载文件存储路径
 SYNC_ON=false
 # read -p "是否启用同步模式（跳过已下载的文件）默认启用？(y/n): " sync_choice
 # if [ "$sync_choice" = "n" ]; then
