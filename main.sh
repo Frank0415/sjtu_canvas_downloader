@@ -8,7 +8,33 @@ API_KEY="$(<"$CUR_PATH/token.txt")"  # 从与脚本相同文件夹中的 token.t
 
 # 下载配置
 DOWNLOAD_FOLDER="$(<"$CUR_PATH/path.txt")"  # 下载文件存储路径
-SYNC_ON=false
+SYNC_ON=true
+
+function usage() {
+    echo "用法: $0 [-f|--false] [-t|--true]"
+    echo "  -f, --false   禁用同步模式（下载所有文件）"
+    echo "  -t, --true    启用同步模式（跳过已下载的文件）"
+    exit 1
+}
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -f|--false)
+            SYNC_ON=false
+            shift
+            ;;
+        -t|--true)
+            SYNC_ON=true
+            shift
+            ;;
+        *)
+            usage
+            SYNC_ON=true
+            shift
+            ;;
+    esac
+    shift
+done
 # read -p "是否启用同步模式（跳过已下载的文件）默认启用？(y/n): " sync_choice
 # if [ "$sync_choice" = "n" ]; then
 #     SYNC_ON=false
