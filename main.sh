@@ -147,23 +147,25 @@ sync_files() {
 
         # Iterate through course folders
         for folder_id in $(get_course_folders "$course_id"); do
-            folder_name=$(curl -s -H "Authorization: Bearer $API_KEY" "$CANVAS_API_URL/folders/$folder_id" | jq -r '.name')
-            if [ -z "$folder_name" ] || [ "$folder_name" = "null" ]; then
+            folder_full_name=$(curl -s -H "Authorization: Bearer $API_KEY" "$CANVAS_API_URL/folders/$folder_id" | jq -r '.full_name')
+            # 去除前缀 "course files/"
+            folder_full_name=${folder_full_name#course files/}
+            if [ -z "$folder_full_name" ] || [ "$folder_full_name" = "null" ]; then
                 continue
             fi
-            echo "Processing folder: $folder_name"
+            echo "Processing folder: $folder_full_name"
 
             # Iterate through files in folder
             while read -r file_id file_name; do
-            if [ -z "$file_id" ] || [ -z "$file_name" ] || [ "$file_name" = "null" ] || [ "$folder_name" = "null" ]; then
+            if [ -z "$file_id" ] || [ -z "$file_name" ] || [ "$file_name" = "null" ] || [ "$folder_full_name" = "null" ]; then
                 continue
             fi
 
             # Check if file is already downloaded
-            if [ "$SYNC_ON" = true ] && echo "$current_files" | grep -q "$course_name/$folder_name/$file_name"; then
-                echo "File already exists, skipping: $course_name/$folder_name/$file_name"
+            if [ "$SYNC_ON" = true ] && echo "$current_files" | grep -q "$course_name/$folder_full_name/$file_name"; then
+                echo "File already exists, skipping: $course_name/$folder_full_name/$file_name"
             else
-                download_file "$file_id" "$file_name" "$course_name/$folder_name"
+                download_file "$file_id" "$file_name" "$course_name/$folder_full_name"
                 new_files_count=$((new_files_count + 1))
             fi
             done < <(get_files_in_folder "$folder_id")
